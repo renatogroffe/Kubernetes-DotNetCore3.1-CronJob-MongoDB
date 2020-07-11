@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-monitor-sites
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: monitor-sites
+            image: renatogroffe/jobmonitoramentosites-mongodb:latest
+            env:
+            - name: Sites
+              value: https://github.com|https://youtube.com|https://siteinvalido.com.br
+            - name: ConnectionStrings__BaseMonitoramentoSites
+              valueFrom:
+                secretKeyRef:
+                  name: testegroffe-cronjob
+                  key: ConexaoMongoDB
+          restartPolicy: OnFailure
